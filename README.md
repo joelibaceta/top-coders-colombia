@@ -5,6 +5,7 @@ Based on Github Stats
 
 <br/>
 
+
 ## ¿Cómo se calcula el Raking?
 
 Para generar el ranking se realiza un calculo del indice rockstar, considerando las siguientes variables:
