@@ -1,7 +1,7 @@
 # Top Coders Colombia
 Based on Github Stats
 
-[![CodeCogsEqn.svg](images/demo.png)](http://joelibaceta.github.io/top-coders-colombia/)
+[![CodeCogsEqn.svg](images/DemoCol.png)](http://joelibaceta.github.io/top-coders-colombia/)
 
 <br/>
 
