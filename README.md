@@ -1,7 +1,7 @@
-# Top Coders Perú
+# Top Coders Colombia
 Based on Github Stats
 
-[![CodeCogsEqn.svg](images/demo.png)](http://joelibaceta.github.io/top-coders-peru/)
+[![CodeCogsEqn.svg](images/demo.png)](http://joelibaceta.github.io/top-coders-colombia/)
 
 <br/>
 
