@@ -7,6 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         {%- seo -%}
         {% capture maincss %}{% include custom.scss %}{% endcapture %}
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js'></script>
   </head>
 
   <body>
@@ -17,7 +18,9 @@
         <div class="column Main__Info">
             <h1>Colombia Top Coders</h1>
             <p>based on github stats</p>
-
+            <br/><br/> 
+            <canvas id="languagesChart" width="600" height="400"></canvas>
+            <br/><br/>
             <div class="contribute-button">
                 <a href="https://github.com/joelibaceta/top-coders-colombia">
                 <svg viewBox="0 0 32.579 31.775" width="32px" height="32px">
@@ -26,6 +29,7 @@
                 <span>Contribute to this project</span>
                 </a>
             </div>
+            
             <div>
               <!-- <p> Other Rankings </p>
 
@@ -41,7 +45,7 @@
         </div>
     </div>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146523280-3"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146523280-3"></script> 
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -49,6 +53,8 @@
 
       gtag('config', 'UA-146523280-3');
     </script>
+
+    
 
 
 

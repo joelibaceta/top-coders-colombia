@@ -32,14 +32,13 @@
   }
 }
 
-.UsersTableContainer {
-    max-width: 100%;
+.UsersTableContainer { 
     overflow-x: auto;
 }
 
 .Main {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     flex-direction: column;
     @include breakpoint(xl) {
         flex-direction: row;
@@ -47,8 +46,7 @@
     &__Info {
       min-width: 250px;
     }
-    &__Content {
-      flex: 1;
+    &__Content { 
       overflow-x: auto;
     }
 }
@@ -92,4 +90,10 @@ table {
 #flags {
   display: flex;
   justify-content: space-between;
+}
+
+@media (max-width: 900px) {
+  canvas {
+    display: none;
+  }
 }

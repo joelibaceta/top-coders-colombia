@@ -6,6 +6,8 @@ require 'uri'
 module Jekyll
     class MeetupMembersCounterTag < Liquid::Tag
 
+        attr_accessor :technologies
+
         def authorization_string
             return "client_id=#{ENV['CLIENT_ID']}&client_secret=#{ENV['CLIENT_SECRET']}"
         end
@@ -27,7 +29,7 @@ module Jekyll
         end
 
         def countRepos(user)
-            uri = URI.parse("https://api.github.com/users/#{user}/repos?#{authorization_string}")
+            uri = URI.parse("https://api.github.com/users/#{user}/repos?#{authorization_string}&per_page=100")
 
             http = Net::HTTP.new(uri.host, uri.port)
             http.use_ssl = true
@@ -39,9 +41,14 @@ module Jekyll
 
             repos = JSON.parse(response.body)
 
+            repos.each do |repo|
+                getTechnologies(user, repo["name"])
+            end
+
             repos = repos.select do | repo |
                 !repo["fork"]
             end
+            
 
             return repos.size
         end
@@ -77,6 +84,17 @@ module Jekyll
 
         end
 
+        def getTechnologies(user, repo)
+            uri = URI.parse("https://api.github.com/repos/#{user}/#{repo}/languages?#{authorization_string}")
+            response = Net::HTTP.get_response(uri)
+            languages = JSON.parse(response.body)
+
+            languages.each do |language, lines|
+                counter = @technologies[language] || 0
+                @technologies[language] = (counter + 1 ) 
+            end
+        end
+
         def getUserData(user)
             uri = URI.parse("https://api.github.com/users/#{user}?#{authorization_string}")
             response = Net::HTTP.get_response(uri)
@@ -94,11 +112,11 @@ module Jekyll
             max_public_repos = 0
             max_issues = 0
 
-            (1..3).each do |i|
+            (1..2).each do |i|
 
                 sleep(30)
 
-                uri = URI.parse("https://api.github.com/search/users?q=location:colombia followers:>10&per_page=30&page=#{i}&sort=followers&order=desc&#{authorization_string}")
+                uri = URI.parse("https://api.github.com/search/users?q=location:colombia followers:>10&per_page=25&page=#{i}&sort=followers&order=desc&#{authorization_string}")
 
                 response = Net::HTTP.get_response(uri)
                 users = JSON.parse(response.body)
@@ -149,18 +167,28 @@ module Jekyll
                 ) / 5.0
             end
 
-            return @top_users.sort_by {|obj| obj[:score]}.reverse
+            languages = @technologies.sort_by {|k,v| v}.reverse.first(10).to_h 
+            sum = languages.values.reduce(:+).to_f
+
+            languages.each do |language, value|
+                languages[language] = (value/sum * 100).round(2)
+            end
+
+            return @top_users.sort_by {|obj| obj[:score]}.reverse, languages
         end
 
         def render(context)
-            users = getTopUsersData
-            element = "<div class='UsersTableContainer'> <table>\n"
-            element += "<thead><th><td colspan='2'>User</td><td>Name</td><td>Email</td><td>Company</td><td>Followers</td><td>Commits</td><td>Stars</td><td>Repos</td><td>Issues/PR</td></th><thead>\n"
+            users, languages = getTopUsersData
+            p languages
+            element = "<script> draw_languages_chart(" + languages.to_json + ") </script>\n"
+
+            element += "<div class='UsersTableContainer'> <table>\n"
+            element += "<thead><th><td>User</td><td>Info</td><td>Followers</td><td>Commits</td><td>Stars</td><td>Repos</td><td>Issues/PR</td></th><thead>\n"
             element += "<tbody>"
             users.each_with_index do |user, i|
                 element += "<tr><td>#{i + 1}</td>"
-                element += "<td><img class='User__image' src='#{user[:pic]}'></td>"
-                element += "<td><a href='#{user[:url]}'>#{user[:id]}</a></td><td>#{user[:name]}</td><td>#{user[:email]}</td><td>#{user[:company]}</td>"
+                element += "<td><img class='User__image' src='#{user[:pic]}'><br/><a href='#{user[:url]}'>#{user[:id]}</a></td>"
+                element += "<td><b>#{user[:name]}</b><br/>#{user[:email]}<br/><i>#{user[:company]}</i></td>"
                 element += "<td>#{user[:followers]}</td><td>#{user[:commits]}</td><td>#{user[:stars]}</td><td>#{user[:repos]}</td><td>#{user[:issues]}</td></tr>\n"
             end
             element += "</tbody>"
@@ -168,7 +196,9 @@ module Jekyll
         end
 
         def initialize(tag_name, text, tokens)
+            
             super
+            @technologies = Hash.new
         end
     end
 end
