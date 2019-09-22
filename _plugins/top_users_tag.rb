@@ -112,11 +112,11 @@ module Jekyll
             max_public_repos = 0
             max_issues = 0
 
-            (1..2).each do |i|
+            (1..3).each do |i|
 
                 sleep(30)
 
-                uri = URI.parse("https://api.github.com/search/users?q=location:colombia followers:>10&per_page=30&page=#{i}&sort=followers&order=desc&#{authorization_string}")
+                uri = URI.parse("https://api.github.com/search/users?q=location:colombia followers:>10&per_page=30x&page=#{i}&sort=followers&order=desc&#{authorization_string}")
 
                 response = Net::HTTP.get_response(uri)
                 users = JSON.parse(response.body)
