@@ -167,7 +167,7 @@ module Jekyll
                 ) / 5.0
             end
 
-            languages = @technologies.sort_by {|k,v| v}.reverse.first(10).to_h 
+            languages = @technologies.sort_by {|k,v| v}.reverse.first(15).to_h 
             sum = languages.values.reduce(:+).to_f
 
             languages.each do |language, value|
@@ -179,7 +179,6 @@ module Jekyll
 
         def render(context)
             users, languages = getTopUsersData
-            p languages
             element = "<script> draw_languages_chart(" + languages.to_json + ") </script>\n"
 
             element += "<div class='UsersTableContainer'> <table>\n"
